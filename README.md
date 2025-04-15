@@ -2,7 +2,7 @@
 Prompt Engineering for Automated Bug Fixing: A Preliminary LLM Study.
 
 
-### QuixBugs Full Results
+# QuixBugs Full Results
 | Problem                    | Approach         | Test Result   |
 |----------------------------|------------------|---------------|
 | BITCOUNT                   | Zero-Shot        | ✅ Passed     |
@@ -126,4 +126,61 @@ Prompt Engineering for Automated Bug Fixing: A Preliminary LLM Study.
 | WeightedEdge               | Few-Shot         | ❌ Failed     |
 | WeightedEdge               | Chain-of-Thought | ❌ Failed     |
 
+# Defects4j Results
+
+### ChatGPT UI - Chunked prompts input
+
+#### Success/Failure Table
+| Project Id & Bug Id | Zero-shot success/failure | Few-shot success/failure | CoT success/failure |
+|---------------------|---------------------------|---------------------------|----------------------|
+| Lang 1              | FAILURE                   | FAILURE                   | FAILURE              |
+
+#### Result Details
+| Project id and Bug id | Zero-shot result | Few-shot result                                                                 | CoT result     |
+|-----------------------|------------------|----------------------------------------------------------------------------------|----------------|
+| Lang 1                | Syntax errors    | No Syntax errors, more test method are failing including the test method failed | Syntax errors  |
+
+---
+
+### ChatGPT UI - File prompts input
+
+#### Success/Failure Table
+| Project Id & Bug Id   | Zero-shot success/failure        | Few-shot success/failure         | CoT success/failure            |
+|-----------------------|----------------------------------|----------------------------------|--------------------------------|
+| Lang 1                | FAILURE                          | FAILURE                          | FAILURE                        |
+| Lang 3                | FAILURE                          | PARTIAL SUCCESS                  | FAILURE                        |
+| Chart                 | FAILURE -- TOO MANY FILES        | FAILURE -- TOO MANY FILES        | FAILURE -- TOO MANY FILES      |
+| Cli 1                 | FAILURE                          | FAILURE                          | PARTIAL SUCCESS                |
+| Cli 2                 | FAILURE                          | FAILURE                          | FAILURE                        |
+| Closure               | FAILURE -- TOO MANY FILES        | FAILURE -- TOO MANY FILES        | FAILURE -- TOO MANY FILES      |
+| Codec (text input)    | FAILURE                          | FAILURE                          | FAILURE                        |
+| Codec 2 (text input)  | FAILURE                          | FAILURE                          | FAILURE                        |
+
+#### Result Details
+| Project id and Bug id | Zero-shot result                                       | Few-shot result                                                       | CoT result                                                                 |
+|-----------------------|--------------------------------------------------------|------------------------------------------------------------------------|-----------------------------------------------------------------------------|
+| Lang 1                | More tests than the test method fails                  | The test method passes but the testCreateNumberFailure_1 test fails    | More than just the TestLang747 test fails -- note that GPT attempts to re-write the entire createNumber method. |
+| Lang 3                | Does not fix the failing test + more tests are failing | Fixes the failing test but other tests are failing                     | Fails more than the test method                                            |
+| Chart                 |                                                        |                                                                        |                                                                             |
+| Cli 1                 | Does not fix the failing test                          | Does not fix the failing test                                          | The test method passes but other tests fail                                |
+| Cli 2                 | Does not fix the failing test                          | Does not fix the failing test                                          | Fails more than the test method                                            |
+| Closure               | FAILURE -- TOO MANY FILES                              | FAILURE -- TOO MANY FILES                                              | FAILURE -- TOO MANY FILES                                                  |
+| Codec 1 (text input)  | Does not fix the failing tests                         | Does not fix the failing tests                                         | Does not fix the failing tests                                             |
+| Codec 2 (text input)  | Syntax error (byte.decode cannot find symbol)          | Syntax error (byte.decode cannot find symbol)                          | Syntax error (byte.decode cannot find symbol)                              |
+
+---
+
+### WITHOUT CONTEXT ChatGPT UI - Chunked prompts input without the relevant src files but only the modified files
+
+#### Success/Failure Table
+| Project Id & Bug Id | Zero-shot success/failure | Few-shot success/failure | CoT success/failure |
+|---------------------|---------------------------|---------------------------|----------------------|
+| Lang 1              | FAILURE                   | FAILURE                   | FAILURE              |
+| Lang 3              | FAILURE                   | PARTIAL SUCCESS           | FAILURE              |
+
+#### Result Details
+| Project id and Bug id | Zero-shot result                  | Few-shot result                        | CoT result                        |
+|-----------------------|-----------------------------------|----------------------------------------|-----------------------------------|
+| Lang 1                | Fails current and other tests     | Fails current and other tests          | Fails current and other tests     |
+| Lang 3                | Fails current and other tests     | Fails other tests, passes test method  | Fails current and other tests     |
 
